@@ -62,7 +62,7 @@ where T: Clone {
     where F: Fn(&Frame<T>, (usize, usize)) -> T {
         let mut data = self.data().clone();
         for (x, row) in self.data().iter().enumerate() {
-            for (y, e) in row.iter().enumerate() {
+            for (y, _) in row.iter().enumerate() {
                 data[x][y] = step(&self, (x, y));
             }
         }
