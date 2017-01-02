@@ -23,9 +23,7 @@ fn frame_mut() {
 fn frame_next() {
     let mut frame1 = frame::Frame::<i32>::new(2, 2);
 
-    let frame2 = frame1.next_frame(|board, (x, y)| {
-        board.get(x, y) + 1
-    });
+    let frame2 = frame1.next_frame(|sq| { sq.get(0, 0) + 1 });
 
     let val = i32::default() + 1;
     frame1.set(0, 0, val);
