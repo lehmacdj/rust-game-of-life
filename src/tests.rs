@@ -98,11 +98,11 @@ fn game_of_life_still_square() {
     use rules::GOLState;
     use rules::GOLState::Alive;
 
+    // Make a square which shouldn't move in game of life
     let mut frame = frame::Frame::<GOLState>::new(3, 3);
     frame.set(0, 0, Alive);
     frame.set(0, 1, Alive);
     frame.set(1, 0, Alive);
-    frame.set(0, 0, Alive);
     frame.set(1, 1, Alive);
 
     let frame_new = frame.next_frame(rules::game_of_life);
