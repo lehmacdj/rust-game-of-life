@@ -1,4 +1,5 @@
 use frame;
+use rules;
 
 #[test]
 fn frame_init() {
@@ -32,4 +33,32 @@ fn frame_next() {
     frame1.set(1, 1, val);
 
     assert_eq!(frame1, frame2);
+}
+
+#[test]
+fn game_of_life() {
+    use rules::GOLState;
+    use rules::GOLState::Alive;
+
+    // Create a board that should transform as shown:
+    // DAD    DDD    DAD
+    // DAD -> AAA -> DAD
+    // DAD    DDD    DAD
+    // the board is padded a lot because otherwise the overflow at the edges
+    // would mess with the simulation
+    let mut frame1 = frame::Frame::<GOLState>::new(4, 4);
+    frame1.set(1, 0, Alive);
+    frame1.set(1, 1, Alive);
+    frame1.set(1, 2, Alive);
+
+    let frame2 = frame1.next_frame(rules::game_of_life);
+    let frame3 = frame2.next_frame(rules::game_of_life);
+
+    let mut expected = frame::Frame::<GOLState>::new(4, 4);
+    expected.set(0, 1, Alive);
+    expected.set(1, 1, Alive);
+    expected.set(2, 1, Alive);
+
+    assert_eq!(frame2, expected);
+    assert_eq!(frame3, frame1);
 }

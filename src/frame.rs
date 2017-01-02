@@ -76,6 +76,10 @@ where T: 'a {
         let (x, y) = (add_modulo(x, i, width), add_modulo(y, j, height));
         self.frame.get(x, y)
     }
+
+    pub fn coordinate(&self) -> (usize, usize) {
+        self.point
+    }
 }
 
 impl<T> Frame<T>

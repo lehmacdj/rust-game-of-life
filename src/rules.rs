@@ -1,20 +1,28 @@
 use frame;
 
 /// The state of a node in a GOL
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum GOLState {
     Alive,
     Dead,
 }
 
-impl Square<GOLState> {
+impl Default for GOLState {
+    fn default() -> GOLState { GOLState::Dead }
+}
+
+impl<'a> frame::Square<'a, GOLState>
+where GOLState: 'a {
     /// Return the nodes adjacent to this square
     fn adjacent_nodes(&self) -> Vec<GOLState> {
         let mut nodes = vec![];
-        nodes.push(self.get(0, -1));
-        nodes.push(self.get(0, 1));
-        nodes.push(self.get(-1, 0));
-        nodes.push(self.get(1, 0));
+        for i in -1..2 {
+            for j in -1..2 {
+                if i != 0 || j != 0 {
+                    nodes.push(*self.get(i, j));
+                }
+            }
+        }
         nodes
     }
 
@@ -22,17 +30,20 @@ impl Square<GOLState> {
     fn alive_count(&self) -> usize {
         self.adjacent_nodes()
             .iter()
-            .filter(|e| { e == Alive })
+            .filter(|e| { **e == GOLState::Alive })
             .count()
     }
 }
 
 /// The rule for Conway's Game of Life
-pub fn game_of_life(square: Square<GOLState>) {
-    if square.get(0, 0) == Alive {
+pub fn game_of_life(square: frame::Square<GOLState>) -> GOLState {
+    use self::GOLState::Alive;
+    use self::GOLState::Dead;
+
+    if *square.get(0, 0) == Alive {
         match square.alive_count() {
-            0 | 1 | 4 => Dead,
-            _ => Alive,
+            2 | 3 => Alive,
+            _ => Dead,
         }
     } else {
         match square.alive_count() {
