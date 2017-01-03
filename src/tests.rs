@@ -8,7 +8,7 @@ fn frame_init() {
     assert_eq!(frame.height(), 10);
     for x in 0..9 {
         for y in 0..9 {
-            assert_eq!(*frame.get(x, y), i32::default());
+            assert_eq!(frame.get(x, y), i32::default());
         }
     }
 }
@@ -17,7 +17,7 @@ fn frame_init() {
 fn frame_mut() {
     let mut frame = frame::Frame::<i32>::new(2, 2);
     frame.set(1, 1, 1);
-    assert_eq!(*frame.get(1, 1), 1)
+    assert_eq!(frame.get(1, 1), 1)
 }
 
 #[test]

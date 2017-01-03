@@ -19,7 +19,7 @@ where GOLState: 'a {
         for i in -1..2 {
             for j in -1..2 {
                 if i != 0 || j != 0 {
-                    nodes.push(*self.get(i, j));
+                    nodes.push(self.get(i, j));
                 }
             }
         }
@@ -40,7 +40,7 @@ pub fn game_of_life(square: frame::Square<GOLState>) -> GOLState {
     use self::GOLState::Alive;
     use self::GOLState::Dead;
 
-    if *square.get(0, 0) == Alive {
+    if square.get(0, 0) == Alive {
         match square.alive_count() {
             2 | 3 => Alive,
             _ => Dead,

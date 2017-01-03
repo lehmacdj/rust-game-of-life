@@ -17,7 +17,8 @@ where T: Default + Clone {
 }
 
 /// Getters / setters for the data in the frame
-impl<T> Frame<T> {
+impl<T> Frame<T>
+where T: Clone + Copy {
     /// the width of the frame
     pub fn width(&self) -> usize {
         self.width
@@ -39,8 +40,8 @@ impl<T> Frame<T> {
     }
 
     /// the data at (x, y)
-    pub fn get(&self, x: usize, y: usize) -> &T {
-        &self.data()[x][y]
+    pub fn get(&self, x: usize, y: usize) -> T {
+        self.data()[x][y]
     }
 
     /// set the data at (x, y) to d
@@ -67,9 +68,9 @@ fn add_modulo(x: usize, y: isize, m: usize) -> usize {
 }
 
 impl<'a, T> Square<'a, T>
-where T: 'a {
+where T: 'a + Clone + Copy {
     /// Return a point relative to the square
-    pub fn get(&self, i: isize, j: isize) -> &T {
+    pub fn get(&self, i: isize, j: isize) -> T {
         let (x, y) = self.point;
         let width = self.frame.width();
         let height = self.frame.height();
@@ -83,7 +84,7 @@ where T: 'a {
 }
 
 impl<T> Frame<T>
-where T: Clone {
+where T: Clone + Copy {
     /// return the next frame of the simulation advancing the simulation using
     /// a step function that computes the value for any cell given a certain
     /// board
@@ -104,6 +105,46 @@ where T: Clone {
             data: data,
             width: self.width(),
             height: self.height(),
+        }
+    }
+}
+
+/// An iterator over a Frame
+#[derive(Debug, Clone, PartialEq)]
+pub struct FrameIterator<'a, T>
+where T: 'a {
+    frame: &'a Frame<T>,
+    next_index: (usize, usize),
+}
+
+impl<'a, T> Iterator for FrameIterator<'a, T>
+where T: 'a + Copy + Clone {
+    type Item = (usize, usize, T);
+
+    fn next(&mut self) -> Option<(usize, usize, T)> {
+        let (x, y) = self.next_index;
+
+        if y < self.frame.width() {
+            let val = self.frame.get(x, y);
+
+            self.next_index =
+                if x + 1 < self.frame.width() { (x + 1, y) }
+                else { (0, y + 1) };
+
+            Some((x, y, val))
+        } else {
+            None
+        }
+    }
+}
+
+impl<T> Frame<T> {
+    /// Returns an iterator over tuples of coordinate and the element at that
+    /// coordinate
+    fn square_iterator(&self) -> FrameIterator<T> {
+        FrameIterator {
+            frame:  &self,
+            next_index: (0, 0),
         }
     }
 }
