@@ -141,7 +141,7 @@ where T: 'a + Copy + Clone {
 impl<T> Frame<T> {
     /// Returns an iterator over tuples of coordinate and the element at that
     /// coordinate
-    fn square_iterator(&self) -> FrameIterator<T> {
+    pub fn square_iterator(&self) -> FrameIterator<T> {
         FrameIterator {
             frame:  &self,
             next_index: (0, 0),
