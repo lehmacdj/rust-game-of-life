@@ -2,7 +2,7 @@
 /// This internal representation is not stable and should not be relied upon
 #[derive(Debug, PartialEq)]
 pub struct Frame<T> {
-    data: Vec<Vec<T>>,
+    data: Vec<T>,
     width: usize,
     height: usize,
 }
@@ -11,8 +11,8 @@ impl<T> Frame<T>
 where T: Default + Clone {
     /// Creates an empty frame
     pub fn new(x: usize, y: usize) -> Frame<T> {
-        let default = vec![T::default(); y];
-        Frame::<T> {data: vec![default; x], width: x, height: y}
+        let data = vec![T::default(); x * y];
+        Frame::<T> {data: data, width: x, height: y}
     }
 }
 
@@ -28,24 +28,14 @@ impl<T> Frame<T> {
         self.height
     }
 
-    /// the internal data array
-    fn data(&self) -> &Vec<Vec<T>> {
-        &self.data
-    }
-
-    /// mutable reference to the internal data array
-    fn data_mut(&mut self) -> &mut Vec<Vec<T>> {
-        &mut self.data
-    }
-
     /// the data at (x, y)
     pub fn get(&self, x: usize, y: usize) -> &T {
-        &self.data()[x][y]
+        &self.data[y * self.height + x]
     }
 
     /// get a mutable reference to the data at (x, y)
     pub fn get_mut(&mut self, x: usize, y: usize) -> &mut T {
-        &mut self.data_mut()[x][y]
+        &mut self.data[y * self.height + x]
     }
 }
 
@@ -89,15 +79,13 @@ where T: Clone {
     /// board
     pub fn next_frame<F>(&self, step: F) -> Frame<T>
     where F: Fn(Square<T>) -> T {
-        let mut data = self.data().clone();
-        for (x, row) in self.data().iter().enumerate() {
-            for (y, _) in row.iter().enumerate() {
-                let square = Square {
-                    frame: &self,
-                    point: (x, y),
-                };
-                data[x][y] = step(square);
-            }
+        let mut data = self.data.clone();
+        for (x, y, _) in self.enumerate_squares() {
+            let square = Square {
+                frame: &self,
+                point: (x, y),
+            };
+            data[self.height * y + x] = step(square);
         }
 
         Frame {
@@ -122,14 +110,11 @@ where T: 'a {
 
     fn next(&mut self) -> Option<(usize, usize, &'a T)> {
         let (x, y) = self.next_index;
-
         if y < self.frame.width() {
             let val = self.frame.get(x, y);
-
             self.next_index =
                 if x + 1 < self.frame.width() { (x + 1, y) }
                 else { (0, y + 1) };
-
             Some((x, y, val))
         } else {
             None
@@ -140,7 +125,7 @@ where T: 'a {
 impl<T> Frame<T> {
     /// Returns an iterator over tuples of coordinate and the element at that
     /// coordinate
-    pub fn square_iterator(&self) -> FrameIterator<T> {
+    pub fn enumerate_squares(&self) -> FrameIterator<T> {
         FrameIterator {
             frame: &self,
             next_index: (0, 0),
