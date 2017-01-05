@@ -42,8 +42,8 @@ pub fn rule(curr: Square<State>) -> State {
                         Alive(c) => Some(c),
                         _ => None,
                     }})
-                    .fold(0, |sum, e| { sum + e });
-                Alive(sum / 3)},
+                    .fold(0, |sum, e| { (sum + e as u16) as u16 });
+                Alive((sum / 3) as u8)},
             _ => Dead,
         }
     }
