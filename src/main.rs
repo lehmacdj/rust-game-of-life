@@ -1,11 +1,18 @@
+extern crate rand;
 extern crate simulation;
 extern crate image;
 
 use std::fs::File;
 use std::path::Path;
 
+use std::ops::Deref;
+use std::ops::DerefMut;
+
 use simulation::game_of_life;
 use simulation::game_of_life::State;
+
+use rand::Rng;
+use rand::Rand;
 
 use image::Pixel;
 
@@ -47,6 +54,28 @@ fn main() {
 
 /// Wrapper to allow implementation of traits
 struct W<T>(T);
+
+impl<T> Deref for W<T> {
+    type Target = T;
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
+
+impl<T> DerefMut for W<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        &mut self.0
+    }
+}
+
+impl Rand for W<State> {
+    fn rand<R: Rng>(rng: &mut R) -> W<State> {
+        match rng.gen::<bool>() {
+            true => W(State::Alive),
+            false => W(State::Dead),
+        }
+    }
+}
 
 impl Into<Color> for W<State> {
     fn into(self) -> Color {
