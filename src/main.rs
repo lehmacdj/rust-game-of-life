@@ -8,8 +8,8 @@ use std::path::Path;
 use std::ops::Deref;
 use std::ops::DerefMut;
 
-use simulation::rainbow_life;
-use simulation::rainbow_life::State;
+use simulation::two_color_life;
+use simulation::two_color_life::State;
 
 use rand::Rng;
 use rand::Rand;
@@ -45,7 +45,7 @@ fn main() {
         let _ = image::ImageRgb8(buf).save(fout, image::PNG);
 
         // advance to the next frame
-        sim = sim.next_frame(rainbow_life::rule);
+        sim = sim.next_frame(two_color_life::rule);
     }
 }
 
