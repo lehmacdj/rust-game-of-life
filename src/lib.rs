@@ -6,3 +6,4 @@ pub use frame::*;
 
 /// Public functions that define Conway's Game of Life
 pub mod game_of_life;
+pub mod rainbow_life;
