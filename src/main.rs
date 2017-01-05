@@ -21,15 +21,11 @@ type Color = image::Rgb<u8>;
 fn main() {
     let side = 100;
     let img_side: u32 = (side * 10) as u32;
-    let max_iters = 100;
+    let max_iters = 1000;
 
     // create the frame
     let mut sim = simulation::Frame::<State>::new(side, side);
-    sim.set(1, 0, State::Alive);
-    sim.set(2, 1, State::Alive);
-    sim.set(0, 2, State::Alive);
-    sim.set(1, 2, State::Alive);
-    sim.set(2, 2, State::Alive);
+    random_init_frame(&mut sim);
 
     // setup directory to contain images
     std::fs::create_dir_all("files").unwrap();
@@ -49,6 +45,14 @@ fn main() {
 
         // advance to the next frame
         sim = sim.next_frame(game_of_life::rule);
+    }
+}
+
+fn random_init_frame(frame: &mut simulation::Frame<State>) {
+    for x in 0..frame.width() {
+        for y in 0..frame.height() {
+            frame.set(x, y, *rand::thread_rng().gen::<W<State>>());
+        }
     }
 }
 
