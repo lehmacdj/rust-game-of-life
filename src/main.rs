@@ -24,6 +24,9 @@ fn main() {
     sim.set(1, 2, State::Alive);
     sim.set(2, 2, State::Alive);
 
+    // setup directory to contain images
+    std::fs::create_dir_all("files").unwrap();
+
     for n in 0..max_iters {
         // write the image into a buffer
         let mut buf = image::ImageBuffer::new(img_side, img_side);
@@ -33,8 +36,8 @@ fn main() {
         }
 
         // save the image
-        let num = format!("{:03}", n);
-        let ref mut fout = File::create(&Path::new(&(num + ".png"))).unwrap();
+        let ref name = format!("files/{:03}.png", n);
+        let ref mut fout = File::create(&Path::new(name)).unwrap();
         let _ = image::ImageRgb8(buf).save(fout, image::PNG);
 
         // advance to the next frame
