@@ -122,6 +122,33 @@ where T: 'a {
     }
 }
 
+// /// A mutable iterator over a Frame. Can't get lifetime bounds to work out
+// /// for this for some reason
+// #[derive(Debug, PartialEq)]
+// pub struct FrameIteratorMut<'a, T>
+// where T: 'a {
+//     frame: &'a mut Frame<T>,
+//     next_index: (usize, usize),
+// }
+//
+// impl<'a, T> Iterator for FrameIteratorMut<'a, T>
+// where T: 'a {
+//     type Item = (usize, usize, &'a mut T);
+//
+//     fn next(&mut self) -> Option<(usize, usize, &'a mut T)> {
+//         let (x, y) = self.next_index;
+//         if y < self.frame.width() {
+//             let val = self.frame.get_mut(x, y);
+//             self.next_index =
+//                 if x + 1 < self.frame.width() { (x + 1, y) }
+//                 else { (0, y + 1) };
+//             Some((x, y, val))
+//         } else {
+//             None
+//         }
+//     }
+// }
+
 impl<T> Frame<T> {
     /// Returns an iterator over tuples of coordinate and the element at that
     /// coordinate
