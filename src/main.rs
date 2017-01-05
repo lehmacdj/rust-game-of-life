@@ -8,24 +8,24 @@ use std::path::Path;
 use std::ops::Deref;
 use std::ops::DerefMut;
 
-use simulation::game_of_life;
-use simulation::game_of_life::State;
+use simulation::rainbow_life;
+use simulation::rainbow_life::State;
 
 use rand::Rng;
 use rand::Rand;
 
-use image::Pixel;
-
 type Color = image::Rgb<u8>;
 
 fn main() {
-    let side = 100;
-    let img_side: u32 = (side * 10) as u32;
+    let side = 5;
+    let img_side = (side * 10) as u32;
     let max_iters = 1000;
 
     // create the frame
     let mut sim = simulation::Frame::<State>::new(side, side);
     random_init_frame(&mut sim);
+
+    println!("{:?}", sim);
 
     // setup directory to contain images
     std::fs::create_dir_all("files").unwrap();
@@ -44,7 +44,7 @@ fn main() {
         let _ = image::ImageRgb8(buf).save(fout, image::PNG);
 
         // advance to the next frame
-        sim = sim.next_frame(game_of_life::rule);
+        sim = sim.next_frame(rainbow_life::rule);
     }
 }
 
@@ -75,7 +75,7 @@ impl<T> DerefMut for W<T> {
 impl Rand for W<State> {
     fn rand<R: Rng>(rng: &mut R) -> W<State> {
         match rng.gen::<bool>() {
-            true => W(State::Alive),
+            true => W(State::Alive(rng.gen::<u8>())),
             false => W(State::Dead),
         }
     }
@@ -84,8 +84,8 @@ impl Rand for W<State> {
 impl Into<Color> for W<State> {
     fn into(self) -> Color {
         match self {
-            W(State::Alive) => image::Luma([255]).to_rgb(),
-            W(State::Dead) => image::Luma([0]).to_rgb(),
+            W(State::Alive(c)) => image::Rgb([c, 0, 255 - c]),
+            W(State::Dead) => image::Rgb([0, 0, 0]),
         }
     }
 }
