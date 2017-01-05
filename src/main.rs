@@ -17,7 +17,7 @@ use rand::Rand;
 type Color = image::Rgb<u8>;
 
 fn main() {
-    let side = 5;
+    let side = 100;
     let img_side = (side * 10) as u32;
     let max_iters = 1000;
 
