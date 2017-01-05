@@ -17,8 +17,9 @@ use rand::Rand;
 type Color = image::Rgb<u8>;
 
 fn main() {
-    let side = 100;
-    let img_side = (side * 10) as u32;
+    let side = 1000;
+    let scale = 1;
+    let img_side = (side * scale) as u32;
     let max_iters = 1000;
 
     // create the frame
@@ -75,7 +76,7 @@ impl<T> DerefMut for W<T> {
 impl Rand for W<State> {
     fn rand<R: Rng>(rng: &mut R) -> W<State> {
         match rng.gen::<bool>() {
-            true => W(State::Alive(rng.gen::<u8>())),
+            true => W(State::Alive(if rng.gen::<bool>() {0} else {255})),
             false => W(State::Dead),
         }
     }
