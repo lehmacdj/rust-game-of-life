@@ -26,7 +26,7 @@ fn main() {
 
     for n in 0..max_iters {
         // write the image into a buffer
-        let mut buf: image::ImageBuffer<image::Rgb<u8>, Vec<u8>> = image::ImageBuffer::new(img_side, img_side);
+        let mut buf = image::ImageBuffer::new(img_side, img_side);
         for (x, y, pixel) in buf.enumerate_pixels_mut() {
             let v = sim.get((x / 10) as usize, (y / 10) as usize);
             *pixel = W(v).into();
