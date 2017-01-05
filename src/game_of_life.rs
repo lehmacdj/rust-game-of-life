@@ -23,17 +23,17 @@ where State: 'a {
 }
 
 /// The rule for Conway's Game of Life
-pub fn rule(square: Square<State>) -> State {
+pub fn rule(curr: Square<State>) -> State {
     use self::State::Alive;
     use self::State::Dead;
 
-    if *square.get(0, 0) == Alive {
-        match square.alive_count() {
+    if *curr.get(0, 0) == Alive {
+        match curr.alive_count() {
             2 | 3 => Alive,
             _ => Dead,
         }
     } else {
-        match square.alive_count() {
+        match curr.alive_count() {
             3 => Alive,
             _ => Dead,
         }
