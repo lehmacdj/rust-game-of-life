@@ -13,22 +13,9 @@ impl Default for State {
 
 impl<'a> Square<'a, State>
 where State: 'a {
-    /// Return the nodes adjacent to this square
-    fn adjacent_nodes(&self) -> Vec<State> {
-        let mut nodes = vec![];
-        for i in -1..2 {
-            for j in -1..2 {
-                if i != 0 || j != 0 {
-                    nodes.push(*self.get(i, j));
-                }
-            }
-        }
-        nodes
-    }
-
     /// Return the number of nodes alive surrounding this number
     fn alive_count(&self) -> usize {
-        self.adjacent_nodes()
+        self.within_ortholinear(1)
             .iter()
             .filter(|e| { **e == State::Alive })
             .count()

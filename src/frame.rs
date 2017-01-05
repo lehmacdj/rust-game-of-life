@@ -67,8 +67,26 @@ where T: 'a {
         self.frame.get(x, y)
     }
 
+    /// The coordinate of the square
     pub fn coordinate(&self) -> (usize, usize) {
         self.point
+    }
+}
+
+impl<'a, T> Square<'a, T>
+where T: 'a + Clone {
+    /// Return a nondeterministic Vec of &T's within a square with side length r
+    /// self in an ortholinear fashion. Does not contain the current node.
+    pub fn within_ortholinear(&self, r: isize) -> Vec<T> {
+        let mut nodes = vec![];
+        for i in -r..r + 1 {
+            for j in -r..r + 1 {
+                if i != 0 || j != 0 {
+                    nodes.push(self.get(i, j).clone());
+                }
+            }
+        }
+        nodes
     }
 }
 
