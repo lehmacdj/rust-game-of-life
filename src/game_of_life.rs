@@ -69,17 +69,17 @@ mod tests {
         // the board is padded a lot because otherwise the overflow at the edges
         // would mess with the simulation
         let mut frame1 = Frame::<State>::new(4, 4);
-        frame1.set(1, 0, Alive);
-        frame1.set(1, 1, Alive);
-        frame1.set(1, 2, Alive);
+        *frame1.get_mut(1, 0) = Alive;
+        *frame1.get_mut(1, 1) = Alive;
+        *frame1.get_mut(1, 2) = Alive;
 
         let frame2 = frame1.next_frame(rule);
         let frame3 = frame2.next_frame(rule);
 
         let mut expected = Frame::<State>::new(4, 4);
-        expected.set(0, 1, Alive);
-        expected.set(1, 1, Alive);
-        expected.set(2, 1, Alive);
+        *expected.get_mut(0, 1) = Alive;
+        *expected.get_mut(1, 1) = Alive;
+        *expected.get_mut(2, 1) = Alive;
 
         assert_eq!(frame2, expected);
         assert_eq!(frame3, frame1);
@@ -94,18 +94,18 @@ mod tests {
         // DDDDD
         // DDDDD
         let mut init = Frame::<State>::new(5, 5);
-        init.set(1, 0, Alive);
-        init.set(2, 1, Alive);
-        init.set(0, 2, Alive);
-        init.set(1, 2, Alive);
-        init.set(2, 2, Alive);
+        *init.get_mut(1, 0) = Alive;
+        *init.get_mut(2, 1) = Alive;
+        *init.get_mut(0, 2) = Alive;
+        *init.get_mut(1, 2) = Alive;
+        *init.get_mut(2, 2) = Alive;
 
         let mut second = Frame::<State>::new(5, 5);
-        second.set(0, 1, Alive);
-        second.set(2, 1, Alive);
-        second.set(1, 2, Alive);
-        second.set(2, 2, Alive);
-        second.set(1, 3, Alive);
+        *second.get_mut(0, 1) = Alive;
+        *second.get_mut(2, 1) = Alive;
+        *second.get_mut(1, 2) = Alive;
+        *second.get_mut(2, 2) = Alive;
+        *second.get_mut(1, 3) = Alive;
 
         let next = init.next_frame(rule);
 
@@ -116,10 +116,10 @@ mod tests {
     fn still_square() {
         // Make a square which shouldn't move in game of life
         let mut frame = Frame::<State>::new(3, 3);
-        frame.set(0, 0, Alive);
-        frame.set(0, 1, Alive);
-        frame.set(1, 0, Alive);
-        frame.set(1, 1, Alive);
+        *frame.get_mut(0, 0) = Alive;
+        *frame.get_mut(0, 1) = Alive;
+        *frame.get_mut(1, 0) = Alive;
+        *frame.get_mut(1, 1) = Alive;
 
         let frame_new = frame.next_frame(rule);
 

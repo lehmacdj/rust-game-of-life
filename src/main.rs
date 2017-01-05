@@ -51,7 +51,7 @@ fn main() {
 fn random_init_frame(frame: &mut simulation::Frame<State>) {
     for x in 0..frame.width() {
         for y in 0..frame.height() {
-            frame.set(x, y, *rand::thread_rng().gen::<W<State>>());
+            *frame.get_mut(x, y)  = *rand::thread_rng().gen::<W<State>>();
         }
     }
 }

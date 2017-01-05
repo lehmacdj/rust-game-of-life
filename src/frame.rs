@@ -47,12 +47,6 @@ impl<T> Frame<T> {
     pub fn get_mut(&mut self, x: usize, y: usize) -> &mut T {
         &mut self.data_mut()[x][y]
     }
-
-    /// set the data at (x, y) to d
-    /// DEPRECATED: use `get_mut` instead
-    pub fn set(&mut self, x: usize, y: usize, d: T) {
-        self.data_mut()[x][y] = d;
-    }
 }
 
 /// Represents a single square in the frame
@@ -165,7 +159,7 @@ mod tests {
         assert_eq!(frame.height(), 10);
         for x in 0..9 {
             for y in 0..9 {
-                assert_eq!(frame.get(x, y), i32::default());
+                assert_eq!(*frame.get(x, y), i32::default());
             }
         }
     }
@@ -173,8 +167,8 @@ mod tests {
     #[test]
     fn frame_mut() {
         let mut frame = Frame::<i32>::new(2, 2);
-        frame.set(1, 1, 1);
-        assert_eq!(frame.get(1, 1), 1)
+        *frame.get_mut(1, 1) = 1;
+        assert_eq!(*frame.get(1, 1), 1)
     }
 
     #[test]
@@ -184,10 +178,10 @@ mod tests {
         let frame2 = frame1.next_frame(|sq| { sq.get(0, 0) + 1 });
 
         let val = i32::default() + 1;
-        frame1.set(0, 0, val);
-        frame1.set(0, 1, val);
-        frame1.set(1, 0, val);
-        frame1.set(1, 1, val);
+        *frame1.get_mut(0, 0) = val;
+        *frame1.get_mut(0, 1) = val;
+        *frame1.get_mut(1, 0) = val;
+        *frame1.get_mut(1, 1) = val;
 
         assert_eq!(frame1, frame2);
     }
