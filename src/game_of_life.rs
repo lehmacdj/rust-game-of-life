@@ -19,7 +19,7 @@ where State: 'a {
         for i in -1..2 {
             for j in -1..2 {
                 if i != 0 || j != 0 {
-                    nodes.push(self.get(i, j));
+                    nodes.push(*self.get(i, j));
                 }
             }
         }
@@ -40,7 +40,7 @@ pub fn rule(square: Square<State>) -> State {
     use self::State::Alive;
     use self::State::Dead;
 
-    if square.get(0, 0) == Alive {
+    if *square.get(0, 0) == Alive {
         match square.alive_count() {
             2 | 3 => Alive,
             _ => Dead,

@@ -39,7 +39,7 @@ fn main() {
         let mut buf = image::ImageBuffer::new(img_side, img_side);
         for (x, y, pixel) in buf.enumerate_pixels_mut() {
             let v = sim.get((x / 10) as usize, (y / 10) as usize);
-            *pixel = W(v).into();
+            *pixel = W(*v).into();
         }
 
         // save the image

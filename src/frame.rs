@@ -17,8 +17,7 @@ where T: Default + Clone {
 }
 
 /// Getters / setters for the data in the frame
-impl<T> Frame<T>
-where T: Clone + Copy {
+impl<T> Frame<T> {
     /// the width of the frame
     pub fn width(&self) -> usize {
         self.width
@@ -40,11 +39,17 @@ where T: Clone + Copy {
     }
 
     /// the data at (x, y)
-    pub fn get(&self, x: usize, y: usize) -> T {
-        self.data()[x][y]
+    pub fn get(&self, x: usize, y: usize) -> &T {
+        &self.data()[x][y]
+    }
+
+    /// get a mutable reference to the data at (x, y)
+    pub fn get_mut(&mut self, x: usize, y: usize) -> &mut T {
+        &mut self.data_mut()[x][y]
     }
 
     /// set the data at (x, y) to d
+    /// DEPRECATED: use `get_mut` instead
     pub fn set(&mut self, x: usize, y: usize, d: T) {
         self.data_mut()[x][y] = d;
     }
@@ -68,9 +73,9 @@ fn add_modulo(x: usize, y: isize, m: usize) -> usize {
 }
 
 impl<'a, T> Square<'a, T>
-where T: 'a + Clone + Copy {
+where T: 'a {
     /// Return a point relative to the square
-    pub fn get(&self, i: isize, j: isize) -> T {
+    pub fn get(&self, i: isize, j: isize) -> &T {
         let (x, y) = self.point;
         let width = self.frame.width();
         let height = self.frame.height();
@@ -84,7 +89,7 @@ where T: 'a + Clone + Copy {
 }
 
 impl<T> Frame<T>
-where T: Clone + Copy {
+where T: Clone {
     /// return the next frame of the simulation advancing the simulation using
     /// a step function that computes the value for any cell given a certain
     /// board
@@ -118,10 +123,10 @@ where T: 'a {
 }
 
 impl<'a, T> Iterator for FrameIterator<'a, T>
-where T: 'a + Copy + Clone {
-    type Item = (usize, usize, T);
+where T: 'a {
+    type Item = (usize, usize, &'a T);
 
-    fn next(&mut self) -> Option<(usize, usize, T)> {
+    fn next(&mut self) -> Option<(usize, usize, &'a T)> {
         let (x, y) = self.next_index;
 
         if y < self.frame.width() {
@@ -143,7 +148,7 @@ impl<T> Frame<T> {
     /// coordinate
     pub fn square_iterator(&self) -> FrameIterator<T> {
         FrameIterator {
-            frame:  &self,
+            frame: &self,
             next_index: (0, 0),
         }
     }
