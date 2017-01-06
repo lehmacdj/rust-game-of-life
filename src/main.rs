@@ -57,7 +57,7 @@ fn random_init_frame(frame: &mut simulation::Frame<State>) {
     }
 }
 
-/// Wrapper to allow implementation of traits
+/// Wrapper to allow implementation of traits for types defined outside of crate
 struct W<T>(T);
 
 impl<T> Deref for W<T> {
