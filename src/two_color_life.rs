@@ -39,10 +39,10 @@ pub fn rule(curr: Square<State>) -> State {
             3 => {
                 let sum = curr.within_ortholinear(1).iter()
                     .filter_map(|e| { match *e {
-                        Alive(c) => Some(c),
+                        Alive(c) => Some(c as u16),
                         _ => None,
                     }})
-                    .fold(0, |sum, e| { (sum + e as u16) as u16 });
+                    .sum::<u16>();
                 Alive((sum / 3) as u8)},
             _ => Dead,
         }
