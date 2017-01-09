@@ -44,7 +44,7 @@ impl Default for State {
 }
 
 pub fn rule(curr: Square<State>) -> State {
-    use self::State::{Red, Dead};
+    use self::State::Dead;
 
     let curr_val = *curr.get(0, 0);
 
