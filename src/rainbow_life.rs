@@ -31,7 +31,7 @@ where State: 'a {
     /// Return the number of nodes alive surrounding this number
     fn alive_count(&self) -> usize {
         let this = self.get(0, 0);
-        println!("{:?}", self.within_ortholinear(1));
+//         println!("{:?}", self.within_ortholinear(1));
         self.within_ortholinear(1)
             .iter()
             .filter(|e| { **e != State::Dead && **e != this.enemy() })
@@ -48,8 +48,8 @@ pub fn rule(curr: Square<State>) -> State {
 
     let curr_val = *curr.get(0, 0);
 
-    println!("{:?}", curr);
-    println!("{:?}", curr.alive_count());
+//     println!("{:?}", curr);
+  //   println!("{:?}", curr.alive_count());
 
     if curr_val != Dead {
         match curr.alive_count() {
@@ -62,10 +62,11 @@ pub fn rule(curr: Square<State>) -> State {
                 let neighbors = curr.within_ortholinear(1).iter().cloned()
                     .filter(|e| { *e != Dead })
                     .collect::<Vec<State>>();
-                println!("{:?}", neighbors);
+                // println!("{:?}", neighbors);
                 let m = mode(&neighbors[..]);
-                println!("{:?}", m);
-                Red
+
+                // println!("{:?}", m);
+                m
             },
             _ => Dead,
         }
@@ -139,9 +140,6 @@ mod tests {
         *expected.get_mut(0, 1) = Red;
         *expected.get_mut(1, 1) = Red;
         *expected.get_mut(2, 1) = Red;
-
-        println!("{:?}", frame2);
-        println!("{:?}", frame3);
 
         assert_eq!(frame2, expected);
         assert_eq!(frame3, frame1);

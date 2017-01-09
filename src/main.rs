@@ -8,8 +8,8 @@ use std::path::Path;
 use std::ops::Deref;
 use std::ops::DerefMut;
 
-use simulation::two_color_life;
-use simulation::two_color_life::State;
+use simulation::rainbow_life;
+use simulation::rainbow_life::State;
 
 use rand::Rng;
 use rand::Rand;
@@ -17,25 +17,23 @@ use rand::Rand;
 type Color = image::Rgb<u8>;
 
 fn main() {
-    let side = 1000;
-    let scale = 1;
-    let img_side = (side * scale) as u32;
+    let imgdim = 1000;
+    let scale = 10;
+    let side = (imgdim / scale) as usize;
     let max_iters = 1000;
 
     // create the frame
-    let mut sim = simulation::Frame::<State>::new(side, side);
+    let mut sim = simulation::Frame::new(side, side);
     random_init_frame(&mut sim);
-
-    println!("{:?}", sim);
 
     // setup directory to contain images
     std::fs::create_dir_all("files").unwrap();
 
     for n in 0..max_iters {
         // write the image into a buffer
-        let mut buf = image::ImageBuffer::new(img_side, img_side);
+        let mut buf = image::ImageBuffer::new(imgdim, imgdim);
         for (x, y, pixel) in buf.enumerate_pixels_mut() {
-            let v = sim.get((x / 10) as usize, (y / 10) as usize);
+            let v = sim.get((x / scale) as usize, (y / scale) as usize);
             *pixel = W(*v).into();
         }
 
@@ -45,7 +43,7 @@ fn main() {
         let _ = image::ImageRgb8(buf).save(fout, image::PNG);
 
         // advance to the next frame
-        sim = sim.next_frame(two_color_life::rule);
+        sim = sim.next_frame(rainbow_life::rule);
     }
 }
 
@@ -75,9 +73,12 @@ impl<T> DerefMut for W<T> {
 
 impl Rand for W<State> {
     fn rand<R: Rng>(rng: &mut R) -> W<State> {
-        match rng.gen::<bool>() {
-            true => W(State::Alive(if rng.gen::<bool>() {0} else {255})),
-            false => W(State::Dead),
+        match rng.gen_range(0, 3) {
+            0 => W(State::Red),
+            1 => W(State::Blue),
+            2 => W(State::Green),
+            3 => W(State::Dead),
+            _ => unreachable!(),
         }
     }
 }
@@ -85,8 +86,10 @@ impl Rand for W<State> {
 impl Into<Color> for W<State> {
     fn into(self) -> Color {
         match self {
-            W(State::Alive(c)) => image::Rgb([c, 0, 255 - c]),
-            W(State::Dead) => image::Rgb([0, 0, 0]),
+            W(State::Red)   => image::Rgb([255, 0, 0]),
+            W(State::Blue)  => image::Rgb([0, 255, 0]),
+            W(State::Green) => image::Rgb([0, 0, 255]),
+            W(State::Dead)  => image::Rgb([0, 0, 0]),
         }
     }
 }
