@@ -18,7 +18,7 @@ type Color = image::Rgb<u8>;
 
 fn main() {
     let imgdim = 1000;
-    let scale = 10;
+    let scale = 1;
     let side = (imgdim / scale) as usize;
     let max_iters = 1000;
 
