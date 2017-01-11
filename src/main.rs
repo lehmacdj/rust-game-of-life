@@ -18,7 +18,7 @@ type Color = image::Rgb<u8>;
 
 fn main() {
     let imgdim = 1000;
-    let scale = 1;
+    let scale = 10;
     let side = (imgdim / scale) as usize;
     let max_iters = 1000;
 
@@ -40,17 +40,37 @@ fn main() {
         // save the image
         let ref name = format!("files/{:03}.png", n);
         let ref mut fout = File::create(&Path::new(name)).unwrap();
-        let _ = image::ImageRgb8(buf).save(fout, image::PNG);
+        let _ = image::ImageRgb8(buf).blur(10.).save(fout, image::PNG);
 
         // advance to the next frame
         sim = sim.next_frame(rainbow_life::rule);
     }
 }
 
-fn random_init_frame(frame: &mut simulation::Frame<State>) {
+/// Fill a frame
+fn random_init_frame(mut frame: &mut simulation::Frame<State>) {
     for x in 0..frame.width() {
         for y in 0..frame.height() {
-            *frame.get_mut(x, y)  = *rand::thread_rng().gen::<W<State>>();
+            *frame.get_mut(x, y) = match rand::thread_rng().gen_range(0, 4) {
+                0 => State::Red,
+                1 => State::Green,
+                2 => State::Blue,
+                _ => State::Dead,
+            }
+            //fill_rect(&mut frame, x * 20, y * 20);
+        }
+    }
+}
+
+/// Fill a 20 by 20 region of a frame
+#[allow(dead_code)]
+fn fill_rect(mut frame: &mut simulation::Frame<State>, x: usize, y: usize) {
+    let W(fill) = rand::thread_rng().gen();
+    for i in 0..20 {
+        for j in 0..20 {
+            *frame.get_mut(x + i, y + j) =
+                if rand::thread_rng().gen() { fill }
+                else { State::Dead }
         }
     }
 }
