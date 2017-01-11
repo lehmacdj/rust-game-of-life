@@ -48,9 +48,6 @@ pub fn rule(curr: Square<State>) -> State {
 
     let curr_val = *curr.get(0, 0);
 
-//     println!("{:?}", curr);
-  //   println!("{:?}", curr.alive_count());
-
     if curr_val != Dead {
         match curr.alive_count() {
             2 | 3 => curr_val,
